@@ -15,6 +15,9 @@
    * [3.1: Onboarding instrumentation tests](#31-onboarding-instrumentation-tests)
 * [**4. Screengrab:**](#4-screengrab-setup)
    * [4.1: Screengrab Installation](#41-screengrab-installation)
+   * [4.2: Screengrab File](#42-screengrab-file)
+   * [4.3: Setup environment variables](#43-setup-environment-variables)
+   * [4.4: Taking Screenshots](#44-taking-screenshots)
    
 
   
@@ -67,7 +70,7 @@
  
  * Type ```fastlane test``` in the command prompt.
  
- This will create a fastlane folder with two files called Fastfile and AppFile.
+ This will create a [fastlane](https://github.com/ua108/android_client_carpeesh/tree/master/fastlane) folder with two files called [Fastfile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Fastfile) and [AppFile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Appfile).
  
 
  ## 3. Instrumentation Tests: 
@@ -146,3 +149,58 @@ testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     tools:ignore="ProtectedPermissions" />
 ```
 
+#### 4.2. Screengrab file:
+
+To capture screenshots we need a [screengrab](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Screengrabfile) file to save the configurations
+
+If the file does not exists type the following command to create one.
+
+```bundle exec fastlane screengrab init```
+
+* This will create a Screengrabfile. Replace the contents with the following :-
+```
+  
+# remove the leading '#' to uncomment lines
+
+app_package_name('com.urbananalytica.carpeesh')
+# use_tests_in_packages(['your.screenshot.tests.package'])
+
+app_apk_path('carpeesh/build/outputs/apk/debug/carpeesh-debug.apk')
+tests_apk_path('carpeesh/build/outputs/apk/androidTest/debug/carpeesh-debug-androidTest.apk')
+
+use_adb_root(true)
+
+test_instrumentation_runner 'androidx.test.runner.AndroidJUnitRunner'
+
+locales(['en-US'])
+
+# clear all previously generated screenshots in your local output directory before creating new ones
+clear_previous_screenshots(true)
+
+# For more information about all available options run
+#   fastlane screengrab --help
+```
+
+#### 4.3. Setup environment variables:
+
+Setup the following environment variables for fastlane to use adb and aapt
+
+```
+# Path to Android SDK
+ANDROID_HOME=$HOME/Library/Android/sdk
+
+# Path to Android platform tools (adb, fastboot, etc)
+ANDROID_PLATFORM_TOOLS="$ANDROID_HOME/platform-tools"
+
+# Path to Android tools (aapt, apksigner, zipalign, etc)
+ANDROID_TOOLS="$ANDROID_HOME/build-tools/{your-version}/"
+
+# Add all to the path
+PATH="%ANDROID_HOME%\tools\bin;%ANDROID_HOME%\platform-tools"
+```
+
+#### 4.4. Taking screenshots:
+
+****To take screenshots we need a rooted device or an emulator with api level >24 that should have target Google apis instead of Google play since taking screenshots require root access.****
+
+* Setup environment variables as follows
