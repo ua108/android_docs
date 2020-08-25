@@ -11,10 +11,10 @@
    * [2.1. Fastlane Installation](#21-fastlane-installation)
    * [2.2: Fastlane Setup](#22-fastlane-setup)
    * [2.3: Fastfile and AppFile](#23-fastfile-and-appfile)
-* [**3. Screengrab:**](#3-screengrab-setup)
-   * [3.1: Screengrab Installation](#31-screengrab-installation)
-* [**4. Instrumentation tests:**](#4-instrumentation-tests)
-   * [4.1: Onboarding instrumentation tests](#41-onboarding-instrumentation-tests)
+* [**3. Instrumentation tests:**](#3-instrumentation-tests)
+   * [3.1: Onboarding instrumentation tests](#31-onboarding-instrumentation-tests)
+* [**4. Screengrab:**](#4-screengrab-setup)
+   * [4.1: Screengrab Installation](#41-screengrab-installation)
    
 
   
@@ -69,11 +69,61 @@
  
  This will create a fastlane folder with two files called Fastfile and AppFile.
  
-  ## 3. Screengrab Setup: 
+
+ ## 3. Instrumentation Tests: 
+ 
+***To capture screenshots and create metadata we need to have instrumentation tests to check the sanity of the app and automatic creation on the metadata.***
+
+* Add the dependencies in the app's [build.gradle](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/build.gradle) for writing instrumentation tests.
+```
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'androidx.test:monitor:1.1.0'
+    androidTestImplementation 'tools.fastlane:screengrab:1.2.0'
+```
+
+* Inside the defaultConfig block, add testInstrumentationRunner:
+
+```
+testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+```
+
+ #### 3.1. [Onboarding instrumentation tests](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/src/androidTest/java/com/urbananalytica/carpeesh/OnboardingScreenshotTest.java): 
+ 
+ ```
+   @Test
+    public void testTakeScreenshot() {
+
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        Intent i0 = new Intent(appContext, Onboarding0Activity.class);
+        //Pass dummy url data
+        i0.putExtra("urldata", "eyJUT0tFTiI6Il****Iis2MTQyMjM5NzE0NCJ9");
+        ob0.launchActivity(i0);
+        //Take a screen shot of Onboarding 0 screen
+        Screengrab.screenshot("Onboarding1");
+        ob0.finishActivity();
+
+        // Launch onboarding 1 screen
+        Intent i1 = new Intent(appContext, Onboarding1Activity.class);
+        ob1.launchActivity(i1);
+        
+        //Take a screenshot of onboarding 2 screen
+        Screengrab.screenshot("Onboarding2");
+ ```
+
+* With instrumentation testing on Android, when you install a separate APK package, it installs the test APK to drive the UI automation. To do so enter the following command in the project directory with the gradlew file.
+
+```gradlew assembleDebug assembleAndroidTest```
+
+* Once completed there will be two apk files i.e a normal APK saved under ```android_client_carpeesh\carpeesh\build\outputs\apk\debug\carpeesh-debug.apk``` and the test APK under ```android_client_carpeesh\carpeesh\build\outputs\apk\androidTest\debug\carpeesh-debug-androidTest.apk```
+
+  ## 4. Screengrab Setup: 
  
 ***Fastlane’s [screengrab](https://docs.fastlane.tools/actions/screengrab/) is an action that generates localized screenshots of your Android app for different device types and languages.***
 
- #### 3.1. Screengrab Installation: 
+ #### 4.1. Screengrab Installation: 
  
  To use the Screengrab tool we need the command line tool first. Type the following command to install this :
  
@@ -96,45 +146,3 @@
     tools:ignore="ProtectedPermissions" />
 ```
 
-* Add the dependencies in the app's [build.gradle](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/build.gradle) for writing instrumentation tests.
-```
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'androidx.test:monitor:1.1.0'
-    androidTestImplementation 'tools.fastlane:screengrab:1.2.0'
-```
-
-* Inside the defaultConfig block, add testInstrumentationRunner:
-
-```
-testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-```
-
-  ## 4. Instrumentation Tests: 
- 
-***To capture screenshots and create metadata we need to have instrumentation tests to check the sanity of the app and automatic creation on the metadata.***
-
- #### 4.1. [Onboarding instrumentation tests](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/src/androidTest/java/com/urbananalytica/carpeesh/OnboardingScreenshotTest.java): 
- 
- ```
-   @Test
-    public void testTakeScreenshot() {
-
-        Context appContext = InstrumentationRegistry.getTargetContext();
-        Intent i0 = new Intent(appContext, Onboarding0Activity.class);
-        //Pass dummy url data
-        i0.putExtra("urldata", "eyJUT0tFTiI6Il****Iis2MTQyMjM5NzE0NCJ9");
-        ob0.launchActivity(i0);
-        //Take a screen shot of Onboarding 0 screen
-        Screengrab.screenshot("Onboarding1");
-        ob0.finishActivity();
-
-        // Launch onboarding 1 screen
-        Intent i1 = new Intent(appContext, Onboarding1Activity.class);
-        ob1.launchActivity(i1);
-        
-        //Take a screenshot of onboarding 2 screen
-        Screengrab.screenshot("Onboarding2");
- ```
