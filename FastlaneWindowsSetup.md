@@ -13,6 +13,8 @@
    * [2.3: Fastfile and AppFile](#23-fastfile-and-appfile)
 * [**3. Screengrab:**](#3-screengrab-setup)
    * [3.1: Screengrab Installation](#31-screengrab-installation)
+* [**4. Instrumentation tests:**](#4-instrumentation-tests)
+   * [4.1: Onboarding instrumentation tests](#41-onboarding-instrumentation-tests)
    
 
   
@@ -109,3 +111,30 @@
 ```
 testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 ```
+
+  ## 4. Instrumentation Tests: 
+ 
+***To capture screenshots and create metadata we need to have instrumentation tests to check the sanity of the app and automatic creation on the metadata.***
+
+ #### 4.1. [Onboarding instrumentation tests](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/src/androidTest/java/com/urbananalytica/carpeesh/OnboardingScreenshotTest.java): 
+ 
+ ```
+   @Test
+    public void testTakeScreenshot() {
+
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        Intent i0 = new Intent(appContext, Onboarding0Activity.class);
+        //Pass dummy url data
+        i0.putExtra("urldata", "eyJUT0tFTiI6Il****Iis2MTQyMjM5NzE0NCJ9");
+        ob0.launchActivity(i0);
+        //Take a screen shot of Onboarding 0 screen
+        Screengrab.screenshot("Onboarding1");
+        ob0.finishActivity();
+
+        // Launch onboarding 1 screen
+        Intent i1 = new Intent(appContext, Onboarding1Activity.class);
+        ob1.launchActivity(i1);
+        
+        //Take a screenshot of onboarding 2 screen
+        Screengrab.screenshot("Onboarding2");
+ ```
