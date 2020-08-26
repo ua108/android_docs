@@ -11,13 +11,11 @@
    * [2.1. Fastlane Installation](#21-fastlane-installation)
    * [2.2: Fastlane Setup](#22-fastlane-setup)
    * [2.3: Fastfile and AppFile](#23-fastfile-and-appfile)
+         * [2.3.1: AppFile](#231-appfile)
+         * [2.3.2: FastFile](#232-fastfile)
 * [**3. Instrumentation tests:**](#3-instrumentation-tests)
    * [3.1: Onboarding instrumentation tests](#31-onboarding-instrumentation-tests)
-* [**4. Screengrab:**](#4-screengrab-setup)
-   * [4.1: Screengrab Installation](#41-screengrab-installation)
-   * [4.2: Screengrab File](#42-screengrab-file)
-   * [4.3: Setup environment variables](#43-setup-environment-variables)
-   * [4.4: Taking Screenshots](#44-taking-screenshots)
+
    
 
   
@@ -121,86 +119,3 @@ testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 ```gradlew assembleDebug assembleAndroidTest```
 
 * Once completed there will be two apk files i.e a normal APK saved under ```android_client_carpeesh\carpeesh\build\outputs\apk\debug\carpeesh-debug.apk``` and the test APK under ```android_client_carpeesh\carpeesh\build\outputs\apk\androidTest\debug\carpeesh-debug-androidTest.apk```
-
-  ## 4. Screengrab Setup: 
- 
-***Fastlane’s [screengrab](https://docs.fastlane.tools/actions/screengrab/) is an action that generates localized screenshots of your Android app for different device types and languages.***
-
- #### 4.1. Screengrab Installation: 
- 
- To use the Screengrab tool we need the command line tool first. Type the following command to install this :
- 
- ```gem install screengrab```
- 
- * Add required permissions so that the UI tests can wake up the device to take screenshots. We have configured that in the [library project manifest file](https://github.com/ua108/android_lib/blob/master/shared_lib/src/main/AndroidManifest.xml)
- 
- ```
-  <!-- Allows unlocking your device and activating its screen so UI tests can succeed -->
-  <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-  <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-  <!-- Allows for storing and retrieving screenshots -->
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-  <!-- Allows changing locales -->
-  <uses-permission xmlns:tools="http://schemas.android.com/tools"
-    android:name="android.permission.CHANGE_CONFIGURATION"
-    tools:ignore="ProtectedPermissions" />
-```
-
-#### 4.2. Screengrab file:
-
-To capture screenshots we need a [screengrab](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Screengrabfile) file to save the configurations
-
-If the file does not exists type the following command to create one.
-
-```bundle exec fastlane screengrab init```
-
-* This will create a Screengrabfile. Replace the contents with the following :-
-```
-  
-# remove the leading '#' to uncomment lines
-
-app_package_name('com.urbananalytica.carpeesh')
-# use_tests_in_packages(['your.screenshot.tests.package'])
-
-app_apk_path('carpeesh/build/outputs/apk/debug/carpeesh-debug.apk')
-tests_apk_path('carpeesh/build/outputs/apk/androidTest/debug/carpeesh-debug-androidTest.apk')
-
-use_adb_root(true)
-
-test_instrumentation_runner 'androidx.test.runner.AndroidJUnitRunner'
-
-locales(['en-US'])
-
-# clear all previously generated screenshots in your local output directory before creating new ones
-clear_previous_screenshots(true)
-
-# For more information about all available options run
-#   fastlane screengrab --help
-```
-
-#### 4.3. Setup environment variables:
-
-Setup the following environment variables for fastlane to use adb and aapt
-
-```
-# Path to Android SDK
-ANDROID_HOME=$HOME/Library/Android/sdk
-
-# Path to Android platform tools (adb, fastboot, etc)
-ANDROID_PLATFORM_TOOLS="$ANDROID_HOME/platform-tools"
-
-# Path to Android tools (aapt, apksigner, zipalign, etc)
-ANDROID_TOOLS="$ANDROID_HOME/build-tools/{your-version}/"
-
-# Add all to the path
-PATH="%ANDROID_HOME%\tools\bin;%ANDROID_HOME%\platform-tools"
-```
-
-#### 4.4. Taking screenshots:
-
-****To take screenshots we need a rooted device or an emulator with api level >24 that should have target Google apis instead of Google play since taking screenshots require root access.****
-
-* Setup environment variables as follows
