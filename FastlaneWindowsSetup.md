@@ -13,8 +13,8 @@
 * [**3: Fastfile and AppFile](#3-fastfile-and-appfile)
     * [3.1: AppFile](#31-appfile)
     * [3.2: FastFile](#32-fastfile)
-* [**4. Instrumentation tests:**](#4-instrumentation-tests)
-   * [4.1: Onboarding instrumentation tests](#41-onboarding-instrumentation-tests)
+* [**4. Deploying to Play Store:**](#4-deploying-to-play_store)
+  
 
    
 
@@ -153,51 +153,5 @@ end
 
 
 
- ## 4. Instrumentation Tests: 
- 
-***To capture screenshots and create metadata we need to have instrumentation tests to check the sanity of the app and automatic creation on the metadata.***
+ ## 4. Deploying to Play Store: 
 
-* Add the dependencies in the app's [build.gradle](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/build.gradle) for writing instrumentation tests.
-```
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'androidx.test:monitor:1.1.0'
-    androidTestImplementation 'tools.fastlane:screengrab:1.2.0'
-```
-
-* Inside the defaultConfig block, add testInstrumentationRunner:
-
-```
-testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-```
-
- #### 4.1. [Onboarding instrumentation tests](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/src/androidTest/java/com/urbananalytica/carpeesh/OnboardingScreenshotTest.java): 
- 
- ```
-   @Test
-    public void testTakeScreenshot() {
-
-        Context appContext = InstrumentationRegistry.getTargetContext();
-        Intent i0 = new Intent(appContext, Onboarding0Activity.class);
-        //Pass dummy url data
-        i0.putExtra("urldata", "eyJUT***************QyMjM5NzE0NCJ9");
-        ob0.launchActivity(i0);
-        //Take a screen shot of Onboarding 0 screen
-        Screengrab.screenshot("Onboarding1");
-        ob0.finishActivity();
-
-        // Launch onboarding 1 screen
-        Intent i1 = new Intent(appContext, Onboarding1Activity.class);
-        ob1.launchActivity(i1);
-        
-        //Take a screenshot of onboarding 2 screen
-        Screengrab.screenshot("Onboarding2");
- ```
-
-* With instrumentation testing on Android, when you install a separate APK package, it installs the test APK to drive the UI automation. To do so enter the following command in the project directory with the gradlew file.
-
-```gradlew assembleDebug assembleAndroidTest```
-
-* Once completed there will be two apk files i.e a normal APK saved under ```android_client_carpeesh\carpeesh\build\outputs\apk\debug\carpeesh-debug.apk``` and the test APK under ```android_client_carpeesh\carpeesh\build\outputs\apk\androidTest\debug\carpeesh-debug-androidTest.apk```
