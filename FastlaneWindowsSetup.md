@@ -82,9 +82,13 @@
  package_name("com.urbananalytica.carpeesh") # e.g. com.krausefx.app
  ```
  
+ * Validate the json key file by executing the following command. Replace the <local_json_key_path> with the local path of the json file downloaded and saved from 1Password.
+ 
+ ```bundle exec fastlane run validate_play_store_json_key json_key:<local_json_key_path>```
+ 
   #### 3.2 [FastFile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Fastfile):
   
-  This stores the automation configuration that can be run with fastlane.
+  This stores the automation configuration that can be run with fastlane. Fastfile consists of different lanes that when executed along with ```fastlane <lanename>``` performs certain action specified within the lane.
 
   ```
 default_platform(:android)
@@ -100,6 +104,10 @@ platform :android do
     gradle(task: "test")
   end
 
+ desc "Build"
+ lane :build do
+   gradle(task: "clean assembleRelease")
+ end
   
   lane :internal do
     gradle(
@@ -114,7 +122,7 @@ platform :android do
     	build_type: 'Release',
   	print_command: false,
   	properties: {
-    "android.injected.signing.store.file" => "file_path",
+    "android.injected.signing.store.file" => "keystore_file_path",
     "android.injected.signing.store.password" => "keystore_password",
     "android.injected.signing.key.alias" => "alias",
     "android.injected.signing.key.password" => "key_password"
@@ -152,6 +160,14 @@ lane :icon do
 end
 end
   ```
+  
+  * The [keystore](https://start.1password.com/open/i?a=OABLEGTLPRB3XGWOI2ORCRUNUE&h=my.1password.eu&i=oraj2a2krxahvr2spo3xaa2ode&v=2zu3qtf2vpsrn5xi7xxr6iyuli) file is downloaded from 1Password and stored  locally. Replace the values for ```keystore_file_path, keystore_password, alias, key_password``` with the local keystore file path and the credentials mentioned on 1Password.
+  
+  * Execute the following command to test if the apk is generated successfully.
+  
+  ```bundle exec fastlane build```
+  
+  On successful execution, there should be a release build created in the folder ```...\carpeesh\build\outputs\apk\release```
 
 
 
