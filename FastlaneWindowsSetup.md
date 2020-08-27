@@ -88,7 +88,7 @@
  
  * On successful validation, the following messages will be displayed.
  
-  [<img src="https://github.com/ua108/android_docs/blob/master/Screenshots/google_play_conn.PNG" width = "500" height="300"/>](https://github.com/ua108/android_docs/blob/master/Screenshots/google_play_conn.PNG)
+  [<img src="https://github.com/ua108/android_docs/blob/master/Screenshots/google_play_connect.PNG" width = "500" height="300"/>](https://github.com/ua108/android_docs/blob/master/Screenshots/google_play_connect.PNG)
  
  
   #### 3.2 [FastFile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Fastfile):
