@@ -10,14 +10,12 @@
 * [**2. Fastlane:**](#2-fastlane-setup)
    * [2.1. Fastlane Installation](#21-fastlane-installation)
    * [2.2: Fastlane Setup](#22-fastlane-setup)
-   * [2.3: Fastfile and AppFile](#23-fastfile-and-appfile)
-* [**3. Instrumentation tests:**](#3-instrumentation-tests)
-   * [3.1: Onboarding instrumentation tests](#31-onboarding-instrumentation-tests)
-* [**4. Screengrab:**](#4-screengrab-setup)
-   * [4.1: Screengrab Installation](#41-screengrab-installation)
-   * [4.2: Screengrab File](#42-screengrab-file)
-   * [4.3: Setup environment variables](#43-setup-environment-variables)
-   * [4.4: Taking Screenshots](#44-taking-screenshots)
+* [**3: Fastfile and AppFile](#3-fastfile-and-appfile)
+    * [3.1: AppFile](#31-appfile)
+    * [3.2: FastFile](#32-fastfile)
+* [**4. Deploying to Play Store:**](#4-deploying-to-play_store)
+  
+
    
 
   
@@ -64,7 +62,7 @@
  
 * Press **Enter** for the next few questions.
 
- #### 2.3. Fastfile and AppFile: 
+ ## 3. Fastfile and AppFile: 
  
  Once the Fastlane setup for the project is done. We need two file for futher configuration.
  
@@ -72,135 +70,106 @@
  
  This will create a [fastlane](https://github.com/ua108/android_client_carpeesh/tree/master/fastlane) folder with two files called [Fastfile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Fastfile) and [AppFile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Appfile).
  
-
- ## 3. Instrumentation Tests: 
+ #### 3.1 [AppFile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Appfile):
  
-***To capture screenshots and create metadata we need to have instrumentation tests to check the sanity of the app and automatic creation on the metadata.***
-
-* Add the dependencies in the app's [build.gradle](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/build.gradle) for writing instrumentation tests.
-```
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'androidx.test:monitor:1.1.0'
-    androidTestImplementation 'tools.fastlane:screengrab:1.2.0'
-```
-
-* Inside the defaultConfig block, add testInstrumentationRunner:
-
-```
-testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-```
-
- #### 3.1. [Onboarding instrumentation tests](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/src/androidTest/java/com/urbananalytica/carpeesh/OnboardingScreenshotTest.java): 
+ The Appfile stores useful information that are used across all fastlane tools like the application Bundle Identifier, to deploy your lanes faster and tailored on your project needs. The AppFile takes a json key file which connects the Play store account internally. This file can be downloaded from [1Password vault](https://start.1password.com/open/i?a=OABLEGTLPRB3XGWOI2ORCRUNUE&h=my.1password.eu&i=dti6cyqfwssaq2pxtd6n32ehce&v=2zu3qtf2vpsrn5xi7xxr6iyuli) with access permissions. Once downloaded, it can be saved to the project parent folder.
  
  ```
-   @Test
-    public void testTakeScreenshot() {
-
-        Context appContext = InstrumentationRegistry.getTargetContext();
-        Intent i0 = new Intent(appContext, Onboarding0Activity.class);
-        //Pass dummy url data
-        i0.putExtra("urldata", "eyJUT0tFTiI6Il****Iis2MTQyMjM5NzE0NCJ9");
-        ob0.launchActivity(i0);
-        //Take a screen shot of Onboarding 0 screen
-        Screengrab.screenshot("Onboarding1");
-        ob0.finishActivity();
-
-        // Launch onboarding 1 screen
-        Intent i1 = new Intent(appContext, Onboarding1Activity.class);
-        ob1.launchActivity(i1);
-        
-        //Take a screenshot of onboarding 2 screen
-        Screengrab.screenshot("Onboarding2");
+ // API key file. This is a JSON file that contains the credential data that fastlane uses internally to connect to your Play Store account.
+ json_key_file("../_secret/api-899748*******-******8-**********8d.json")
+ 
+ // App bundle id
+ package_name("com.urbananalytica.carpeesh") # e.g. com.krausefx.app
  ```
-
-* With instrumentation testing on Android, when you install a separate APK package, it installs the test APK to drive the UI automation. To do so enter the following command in the project directory with the gradlew file.
-
-```gradlew assembleDebug assembleAndroidTest```
-
-* Once completed there will be two apk files i.e a normal APK saved under ```android_client_carpeesh\carpeesh\build\outputs\apk\debug\carpeesh-debug.apk``` and the test APK under ```android_client_carpeesh\carpeesh\build\outputs\apk\androidTest\debug\carpeesh-debug-androidTest.apk```
-
-  ## 4. Screengrab Setup: 
  
-***Fastlane’s [screengrab](https://docs.fastlane.tools/actions/screengrab/) is an action that generates localized screenshots of your Android app for different device types and languages.***
-
- #### 4.1. Screengrab Installation: 
+ * Validate the json key file by executing the following command. Replace the <local_json_key_path> with the local path of the json file downloaded and saved from 1Password.
  
- To use the Screengrab tool we need the command line tool first. Type the following command to install this :
+ ```bundle exec fastlane run validate_play_store_json_key json_key:<local_json_key_path>```
  
- ```gem install screengrab```
- 
- * Add required permissions so that the UI tests can wake up the device to take screenshots. We have configured that in the [library project manifest file](https://github.com/ua108/android_lib/blob/master/shared_lib/src/main/AndroidManifest.xml)
- 
- ```
-  <!-- Allows unlocking your device and activating its screen so UI tests can succeed -->
-  <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-  <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-  <!-- Allows for storing and retrieving screenshots -->
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-  <!-- Allows changing locales -->
-  <uses-permission xmlns:tools="http://schemas.android.com/tools"
-    android:name="android.permission.CHANGE_CONFIGURATION"
-    tools:ignore="ProtectedPermissions" />
-```
-
-#### 4.2. Screengrab file:
-
-To capture screenshots we need a [screengrab](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Screengrabfile) file to save the configurations
-
-If the file does not exists type the following command to create one.
-
-```bundle exec fastlane screengrab init```
-
-* This will create a Screengrabfile. Replace the contents with the following :-
-```
+  #### 3.2 [FastFile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Fastfile):
   
-# remove the leading '#' to uncomment lines
+  This stores the automation configuration that can be run with fastlane. Fastfile consists of different lanes that when executed along with ```fastlane <lanename>``` performs certain action specified within the lane.
 
-app_package_name('com.urbananalytica.carpeesh')
-# use_tests_in_packages(['your.screenshot.tests.package'])
+  ```
+default_platform(:android)
 
-app_apk_path('carpeesh/build/outputs/apk/debug/carpeesh-debug.apk')
-tests_apk_path('carpeesh/build/outputs/apk/androidTest/debug/carpeesh-debug-androidTest.apk')
+# Webhook url which can be found on slack apps https://api.slack.com/apps/AH****2W/incoming-webhooks?
+ENV["SLACK_URL"] = "https://hooks.slack.com/services/*******Q/*******8/******************Q1"
+# Slack channel name which should be updated
+ENV["SLACK_CHANNEL"] = "#fastlane"
 
-use_adb_root(true)
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
 
-test_instrumentation_runner 'androidx.test.runner.AndroidJUnitRunner'
+ desc "Build"
+ lane :build do
+   gradle(task: "clean assembleRelease")
+ end
+  
+  lane :internal do
+    gradle(
+        task: "clean"
+        )
 
-locales(['en-US'])
+  #Add build signing details for apk generation
+  increment_version_name(app_project_dir: '**/carpeesh', bump_type: 'minor')
+  increment_version_code(app_project_dir: '**/carpeesh')
+    gradle(
+	task: 'assemble',
+    	build_type: 'Release',
+  	print_command: false,
+  	properties: {
+    "android.injected.signing.store.file" => "keystore_file_path",
+    "android.injected.signing.store.password" => "keystore_password",
+    "android.injected.signing.key.alias" => "alias",
+    "android.injected.signing.key.password" => "key_password"
+  	}
 
-# clear all previously generated screenshots in your local output directory before creating new ones
-clear_previous_screenshots(true)
+    )
 
-# For more information about all available options run
-#   fastlane screengrab --help
-```
+# Action to upload to play store with parameters .eg Do not upload automatic screenshots. 
+  upload_to_play_store(
+	track: 'internal',
+	skip_upload_screenshots: true
+	)
 
-#### 4.3. Setup environment variables:
+  version = "Internal release version: " + get_version_name(app_project_dir: '**/carpeesh')
 
-Setup the following environment variables for fastlane to use adb and aapt
+    slack(message: version)
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
+  end
 
-```
-# Path to Android SDK
-ANDROID_HOME=$HOME/Library/Android/sdk
+# Deploy the build to the associated Play store account.
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
 
-# Path to Android platform tools (adb, fastboot, etc)
-ANDROID_PLATFORM_TOOLS="$ANDROID_HOME/platform-tools"
+lane :icon do
+  android_appicon(
+    appicon_image_file: 'fastlane/metadata/app_icon.png',
+    appicon_icon_types: [:launcher],
+    appicon_path: 'carpeesh/src/main/res/mipmap'
+  )
 
-# Path to Android tools (aapt, apksigner, zipalign, etc)
-ANDROID_TOOLS="$ANDROID_HOME/build-tools/{your-version}/"
+end
+end
+  ```
+  
+  * The [keystore](https://start.1password.com/open/i?a=OABLEGTLPRB3XGWOI2ORCRUNUE&h=my.1password.eu&i=oraj2a2krxahvr2spo3xaa2ode&v=2zu3qtf2vpsrn5xi7xxr6iyuli) file is downloaded from 1Password and stored  locally. Replace the values for ```keystore_file_path, keystore_password, alias, key_password``` with the local keystore file path and the credentials mentioned on 1Password.
+  
+  * Execute the following command to test if the apk is generated successfully.
+  
+  ```bundle exec fastlane build```
+  
+  On successful execution, there should be a release build created in the folder ```...\carpeesh\build\outputs\apk\release```
 
-# Add all to the path
-PATH="%ANDROID_HOME%\tools\bin;%ANDROID_HOME%\platform-tools"
-```
 
-#### 4.4. Taking screenshots:
 
-****To take screenshots we need a rooted device or an emulator with api level >24 that should have target Google apis instead of Google play since taking screenshots require root access.****
+ ## 4. Deploying to Play Store: 
 
-* Setup environment variables as follows
