@@ -106,7 +106,7 @@ platform :android do
         task: "clean"
         )
 
-    
+  #Add build signing details for apk generation
   increment_version_name(app_project_dir: '**/carpeesh', bump_type: 'minor')
   increment_version_code(app_project_dir: '**/carpeesh')
     gradle(
@@ -122,6 +122,7 @@ platform :android do
 
     )
 
+# Action to upload to play store with parameters .eg Do not upload automatic screenshots. 
   upload_to_play_store(
 	track: 'internal',
 	skip_upload_screenshots: true
@@ -134,6 +135,7 @@ platform :android do
     # You can also use other beta testing services here
   end
 
+# Deploy the build to the associated Play store account.
   desc "Deploy a new version to the Google Play"
   lane :deploy do
     gradle(task: "clean assembleRelease")
