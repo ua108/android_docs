@@ -86,6 +86,11 @@
  
  ```bundle exec fastlane run validate_play_store_json_key json_key:<local_json_key_path>```
  
+ * On successful validation, the following messages will be displayed.
+ 
+  [<img src="https://github.com/ua108/android_docs/blob/master/Screenshots/google_play_conn.PNG" width = "500" height="300"/>](https://github.com/ua108/android_docs/blob/master/Screenshots/google_play_conn.PNG)
+ 
+ 
   #### 3.2 [FastFile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Fastfile):
   
   This stores the automation configuration that can be run with fastlane. Fastfile consists of different lanes that when executed along with ```fastlane <lanename>``` performs certain action specified within the lane.
