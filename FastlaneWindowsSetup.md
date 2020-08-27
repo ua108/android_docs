@@ -72,7 +72,7 @@
  
  #### 3.1 [AppFile](https://github.com/ua108/android_client_carpeesh/blob/master/fastlane/Appfile):
  
- The Appfile stores useful information that are used across all fastlane tools like the application Bundle Identifier, to deploy your lanes faster and tailored on your project needs.
+ The Appfile stores useful information that are used across all fastlane tools like the application Bundle Identifier, to deploy your lanes faster and tailored on your project needs. The AppFile takes a json key file which connects the Play store account internally. This file can be downloaded from [1Password vault](https://start.1password.com/open/i?a=OABLEGTLPRB3XGWOI2ORCRUNUE&h=my.1password.eu&i=dti6cyqfwssaq2pxtd6n32ehce&v=2zu3qtf2vpsrn5xi7xxr6iyuli) with access permissions. Once downloaded, it can be saved to the project parent folder.
  
  ```
  // API key file. This is a JSON file that contains the credential data that fastlane uses internally to connect to your Play Store account.
@@ -90,7 +90,7 @@
 default_platform(:android)
 
 # Webhook url which can be found on slack apps https://api.slack.com/apps/AH****2W/incoming-webhooks?
-ENV["SLACK_URL"] = "https://hooks.slack.com/services/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"
+ENV["SLACK_URL"] = "https://hooks.slack.com/services/*******Q/*******8/******************Q1"
 # Slack channel name which should be updated
 ENV["SLACK_CHANNEL"] = "#fastlane"
 
@@ -182,7 +182,7 @@ testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         Context appContext = InstrumentationRegistry.getTargetContext();
         Intent i0 = new Intent(appContext, Onboarding0Activity.class);
         //Pass dummy url data
-        i0.putExtra("urldata", "eyJUT0tFTiI6Il****Iis2MTQyMjM5NzE0NCJ9");
+        i0.putExtra("urldata", "eyJUT***************QyMjM5NzE0NCJ9");
         ob0.launchActivity(i0);
         //Take a screen shot of Onboarding 0 screen
         Screengrab.screenshot("Onboarding1");
