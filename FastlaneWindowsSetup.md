@@ -199,7 +199,9 @@ Increment the build number and version name in the [```build.gradle```](https://
 
 ```bundle exec fastlane internal```
 
-When that completes you should have the appropriate APK ready to go in the standard output directory. To upload your apk and metadata to Google Play Store, Fastlane uses a tool called supply. Becuase supply needs authentication information from Google.
+When that completes you should have the appropriate APK ready to go in the standard output directory. To upload your apk and metadata to Google Play Store. This will upload the apk file to the "Internal test" track on the Google play store.
+
+After it runs to success, you can go to [Google Play Console](https://play.google.com/apps/publish/?account=8997481909084941506&noredirect=#ManageReleasesPlace:p=com.urbananalytica.carpeesh&appid=4975293088165532182) > Click on Carpeesh > App Releases > Internal test track > EDIT RELEASE
 
 Back in the Fastfile we can see a code block as follows :
 
@@ -215,12 +217,10 @@ When we run that lane it will create sign apk and deploy to Google Play.
 
 ```upload_to_play_store``` is Fastlane action. ```track``` is its parameter which indicate that whether you want to release your apk to Beta or Production. you can see its available parameter via ```bundle exec fastlane action upload_to_play_store```
 
-* Now we can run lane deploy via: 
+* Now we can run lane deploy to deploy the app to the **Production** track via: 
 
 ``` bundle exec fastlane deploy```
 
-After it rus to success, you can go to [Google Play Console](https://play.google.com/apps/publish/?account=8997481909084941506&noredirect=#ManageReleasesPlace:p=com.urbananalytica.carpeesh&appid=4975293088165532182) > Click on Carpeesh > App Releases > Internal test track > EDIT RELEASE
-
 * In Android App Bundles and APKs to add you will see your apk that you have built or if you don’t see your apk, you can click on ADD FROM LIBRARY.
 
-* Once the apk is uploaded to the internal track, it can be distributed to the testers. Once tested, the apk then be uploaded to the Production track by adding it from the library.
+* The app is now ready to be published.
