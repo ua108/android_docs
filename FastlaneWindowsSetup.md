@@ -222,3 +222,5 @@ When we run that lane it will create sign apk and deploy to Google Play.
 After it rus to success, you can go to [Google Play Console](https://play.google.com/apps/publish/?account=8997481909084941506&noredirect=#ManageReleasesPlace:p=com.urbananalytica.carpeesh&appid=4975293088165532182) > Click on Carpeesh > App Releases > Internal test track > EDIT RELEASE
 
 * In Android App Bundles and APKs to add you will see your apk that you have built or if you don’t see your apk, you can click on ADD FROM LIBRARY.
+
+* Once the apk is uploaded to the internal track, it can be distributed to the testers. Once tested, the apk then be uploaded to the Production track by adding it from the library.
