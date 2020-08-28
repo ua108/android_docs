@@ -136,6 +136,7 @@ platform :android do
     )
 
 # Action to upload to play store with parameters .eg Do not upload automatic screenshots. 
+# Uploads the APK built in the gradle step above and releases it to all production users
   upload_to_play_store(
 	track: 'internal',
 	skip_upload_screenshots: true
@@ -178,3 +179,46 @@ end
 
  ## 4. Deploying to Play Store: 
 
+Now, we have configured our Fastfile and Appfile. Since the app is already listed on the Google play store, we need not create another listing for it. To download the metadata uploaded on Google play listing to your local directory use the following 
+
+```fastlane supply init```
+
+This will download the metadata like images, screenshots, icons, description etc. from the Google play store to [```fastlane/metadata/android```](https://github.com/ua108/android_client_carpeesh/tree/master/fastlane/metadata/android/en-US) folder.
+
+
+Next, we can upload the new build.
+
+Increment the build number and version name in the [```build.gradle```](https://github.com/ua108/android_client_carpeesh/blob/master/carpeesh/build.gradle) file. 
+
+```
+  versionCode 93
+  versionName "0.93.0"
+```
+
+* Once done ,  execute the following command 
+
+```bundle exec fastlane internal```
+
+When that completes you should have the appropriate APK ready to go in the standard output directory. To upload your apk and metadata to Google Play Store, Fastlane uses a tool called supply. Becuase supply needs authentication information from Google.
+
+Back in the Fastfile we can see a code block as follows :
+
+```
+# Deploy the build to the associated Play store account.
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+```
+When we run that lane it will create sign apk and deploy to Google Play.
+
+```upload_to_play_store``` is Fastlane action. ```track``` is its parameter which indicate that whether you want to release your apk to Beta or Production. you can see its available parameter via ```bundle exec fastlane action upload_to_play_store```
+
+* Now we can run lane deploy via: 
+
+``` bundle exec fastlane deploy```
+
+After it rus to success, you can go to [Google Play Console](https://play.google.com/apps/publish/?account=8997481909084941506&noredirect=#ManageReleasesPlace:p=com.urbananalytica.carpeesh&appid=4975293088165532182) > Click on Carpeesh > App Releases > Internal test track > EDIT RELEASE
+
+* In Android App Bundles and APKs to add you will see your apk that you have built or if you don’t see your apk, you can click on ADD FROM LIBRARY.
